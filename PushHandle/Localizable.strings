@@ -1,0 +1,8 @@
+/* 
+  Localizable.strings
+  Push
+
+  Created by 张桂杨 on 2017/2/27.
+  Copyright © 2017年 Ive. All rights reserved.
+*/
+"weather" = "今天天气为%@，温度%@度";
