@@ -1,0 +1,18 @@
+<!--index.wxml-->
+<swiper class="banner" style="height:240px;">
+  <block wx:for="{{imgUrls}}">
+    <swiper-item>
+      <image src="{{item}}" class="slide-image" id="{{index}}" bindtap="bannerClick" bindload="imageLoad"/>
+    </swiper-item>
+  </block>
+</swiper>
+
+<view class="blockLayout">
+
+  <view class="item" style="margin-left:{{marginLeft}}px" wx:for="{{iconUrl}}">
+
+    <image src="{{item}}" class="itemImg">image</image>
+    <label class="itemTitle">title</label>
+  </view>
+</view>
+

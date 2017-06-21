@@ -1,0 +1,36 @@
+/**index.wxss**/
+.banner {
+  
+}
+.slide-image {
+  width: 100%;
+}
+
+.blockLayout {
+  
+  height: 60px;
+  background-color: yellow;
+
+}
+
+.blockLayout .item {
+  float: left;
+  width: 44px;
+  height: 100%;
+  background-color: #e0e0e0;
+}
+
+.item .itemImg {
+  display: block;
+  margin: 7px 12px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+}
+.item .itemTitle {
+  display: block;
+  font-size: 12px;
+  text-align: center;
+  width: 100%;
+  background-color: #f0f0f0;
+}

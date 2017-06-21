@@ -1,0 +1,12 @@
+<view wx:for="{{recordList}}"  class="itemContainer" id="{{index}}" bindlongtap="itemLongTap">
+    <view class="listItem">
+        <view class="time">
+            <view class="timeContent">{{item.date}}</view>
+        </view>
+        <view class="recordItem">
+            <view class="content">水 ：{{item.warterRecord}} 电 ：{{item.electricRecord}}</view>
+        </view>
+    </view>
+</view>
+
+<button class="clearButton" bindtap="clearRecord"> 清除所有数据 </button>

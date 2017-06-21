@@ -1,0 +1,36 @@
+<!--index.wxml-->
+<template name="item">
+   <view class="itemContainer">
+    <label class="name">{{name}}</label>
+    <view class="priceContainer">
+        <label class="unit">{{unit}}</label>
+        <input class="price" type="digit" maxlength="9" bindinput="numChange" id="{{inputId}}" value="{{storageVaule}}"/>
+    </view>
+    
+    <view class="line"></view>
+  </view>
+</template>
+
+
+<view class="mainContainer">
+    <template is="item" data="{{...warter}}"></template>
+    <template is="item" data="{{...electric}}"></template>
+    <template is="item" data="{{...rent}}"></template>
+    <view class="result" >
+        <text bindlongtap="setClipboard">{{result}}</text>
+    </view>
+    <button class="cal" bindtap="cal">计算</button>
+    
+    <view class="bottomView">
+        <view class="bottomItem" bindtap="showRecold" >
+            <label class="bottomItemLabel">历史记录</label>
+        </view>
+        <view class="bottomItem" bindtap="saveRecord" >
+            <label class="bottomItemLabel">数据归档</label>
+        </view>
+        <view class="bottomItem" bindtap="setting" >
+            <label class="bottomItemLabel">数据设置</label>
+        </view>
+    </view>
+   
+ </view>

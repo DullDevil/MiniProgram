@@ -1,0 +1,67 @@
+/**index.wxss**/
+.itemContainer {
+  background-color: #fff;
+}
+.name {
+  margin-left: 10px;
+  font: 12px;
+  line-height: 44px;
+  color: #818181;
+}
+.priceContainer {
+  float: right;
+  width: 120px;
+}
+.unit {
+  float: right;
+  font: 12px;
+  line-height: 44px;
+  margin: 0 10px;
+  color: #818181;
+}
+.price {
+  
+  height: 24px;
+  border: 1px solid #dadada;
+  margin-top: 10px;
+  text-align: right;
+  color: #00a6c4;
+  background-color: #f1f1f1;
+  padding: 0 5px;
+}
+.line {
+  height: 1px;
+  
+  margin: 0 10px;
+  background-color: #f0f0f0;
+}
+
+.cal {
+  margin: 15px;
+  background-color: #00afca;
+  color: #fff
+}
+.result {
+    margin: 0 10px;
+    border: 1px solid #dadada;
+    background-color: #f1f1f1;
+    font-size: 14px;
+    padding: 10px;
+}
+
+
+.bottomItem {
+    float: right;
+    background-color: #fff;
+    text-align: center;
+    margin: 0 10px;
+    height: 44px;
+    vertical-align: middle;
+    line-height: 44px;
+    color: #818181;
+    font-size: 14px;
+} 
+
+.bottomItem .bottomItemLabel {
+    border-bottom: 1px solid #818181;
+}

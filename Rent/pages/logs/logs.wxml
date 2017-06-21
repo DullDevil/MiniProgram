@@ -1,0 +1,27 @@
+<!--logs.wxml-->
+<template name="item">
+   <view class="itemContainer">
+    <label class="name">{{name}}</label>
+    <label class="unit">{{unit}}</label>
+    <input class="price" type="digit" maxlength="9" bindinput="priceChange" id="{{inputId}}" value="{{storageVaule}}"/>
+    <view class="line"></view>
+  </view>
+</template>
+ 
+ <view class="mainContainer">
+    <view class="sectionTitle">
+      <label class="title">上次数据</label> 
+      <label class="loadRecord" bindtap="loadRecord">读取上次数据</label> 
+    </view>
+    <template is="item" data="{{...warterRecord}}"></template>
+    <template is="item" data="{{...electricRecord}}"></template>
+    <view class="sectionTitle"><label class="title">单价</label> </view>
+    <template is="item" data="{{...warter}}"></template>
+    <template is="item" data="{{...electric}}"></template>
+    <template is="item" data="{{...rent}}"></template>
+    <button class="save" bindtap="save">保存</button>
+ </view>
+
+
+
+

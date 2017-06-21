@@ -1,0 +1,7 @@
+<!--index.wxml-->
+
+<button bindtap="chooseImage"> chooseImage </button>
+
+
+<image style="width: 200px; height: 200px; background-color: #eeeeee;" mode="aspectFit" src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1496386385&di=f14a023f12a9c4100b1850f8f13012f8&src=http://pic1.win4000.com/pic/3/e9/72821378027.jpg"></image>
+     
