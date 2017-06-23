@@ -16,8 +16,8 @@
     <template is="item" data="{{...warter}}"></template>
     <template is="item" data="{{...electric}}"></template>
     <template is="item" data="{{...rent}}"></template>
-    <view class="result" >
-        <text bindlongtap="setClipboard">{{result}}</text>
+    <view class="result"  bindlongtap="setClipboard">
+        <text >{{result}}</text>
     </view>
     <button class="cal" bindtap="cal">计算</button>
     
@@ -27,9 +27,6 @@
         </view>
         <view class="bottomItem" bindtap="saveRecord" >
             <label class="bottomItemLabel">数据归档</label>
-        </view>
-        <view class="bottomItem" bindtap="setting" >
-            <label class="bottomItemLabel">数据设置</label>
         </view>
     </view>
    

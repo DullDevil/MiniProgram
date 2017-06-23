@@ -1,176 +1,169 @@
 //index.js
 //获取应用实例
+var util = require('../../utils/util.js');
 Page({
   data: {
     result : "计算结果"
   },
-  numChange : function(e) {
-   if (e.currentTarget.id == "warter") {
-     this.setData ({
-       warterNum : e.detail.value
-     })
-   } else if (e.currentTarget.id == "electric") {
-      this.setData ({
-       electricNum : e.detail.value
-     })
-   } else if (e.currentTarget.id == "rent") {
-      this.setData ({
-       rentNum : e.detail.value
-     })
-   }
- },
- FloatMul: function (arg1,arg2)   {   
-      var m=0,s1=arg1.toString(),s2=arg2.toString();   
-      try{m+=s1.split(".")[1].length}catch(e){}   
-      try{m+=s2.split(".")[1].length}catch(e){}   
-      return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m);   
+  onLoad: function (options) {
+    this.initData();
   },
- cal : function() {
-   var price = wx.getStorageSync("price");
-    var warterPrice = price.warterPrice;
-    var electricPrice = price.electricPrice;
-    var rentPrice = price.rentPrice;
-
+  //输入框内容改变
+  numChange : function(e) {
+    if (e.currentTarget.id == "warter") {
+      this.setData ({
+        warterNum : e.detail.value
+      })
+    } else if (e.currentTarget.id == "electric") {
+      this.setData ({
+        electricNum : e.detail.value
+      })
+    } else if (e.currentTarget.id == "rent") {
+      this.setData ({
+        rentNum : e.detail.value
+      })
+    }
+  },
+  // 计算
+  cal : function() {
+    // 获取价格
+    var price = wx.getStorageSync("price");
+    if (!price) {
+      var that = this;
+      wx.showModal({
+        title: '提示',
+        content: '请设置价格信息',
+        success: function (res) {
+          if (res.confirm) {
+            that.setting();
+          }
+        }
+      })
+      return;
+    }
+    var warterPrice = price.warterPrice > 0 ? price.warterPrice : 0;
+    var electricPrice = price.electricPrice > 0 ? price.electricPrice : 0;
+    var rentPrice = price.rentPrice > 0 ? price.rentPrice : 0;
+  
+    // 读取历史记录
     var record = wx.getStorageSync('record');
-    
-    var warterRecord = record.warterRecord;
-    if (!warterRecord) {
-      warterRecord = 0;
-    }
-    var electricRecord = record.electricRecord
-    if (!electricRecord) {
-      electricRecord = 0;
-    }
-    if (!this.data.warterNum) {
-      wx.showToast({
-        title: '水表数不能为空'
-      })
-      return;
-    }
-    if (!this.data.electricNum) {
-      wx.showToast({
-        title: '电表数不能为空',
-        icon: 'success',
-        duration: 2000
-      })
-      return;
-    }
-    if (!this.data.rentNum) {
-      wx.showToast({
-        title: '房租月数不能为空'
-      })
-      return;
-    }
-    var warterNum = parseFloat(this.data.warterNum) - parseFloat(warterRecord);
-    var electricNum = parseFloat(this.data.electricNum) - parseFloat(electricRecord);
-    if (warterNum < 0) {
-       wx.showToast({
-        title: '当前用水量小于历史数据'
+    var warterRecord = record.warterRecord ? record.warterRecord : 0;
+    var electricRecord = record.electricRecord ? record.electricRecord : 0;
+
+    // 输入框数据处理
+    var warterNum = this.data.warterNum ? this.data.warterNum  : 0;
+    var electricNum = this.data.electricNum ? this.data.electricNum : 0;
+    var rentNum = this.data.rentNum ? this.data.rentNum : 0;
+
+    var useredWarterNum = warterNum - warterRecord;
+    var useredElectricNum = electricNum - electricRecord;
+
+    if (useredWarterNum < 0) {
+      var that = this;
+      wx.showModal({
+        title: '数据异常',
+        content: '当前用水量小于上次数据；前往设置上次数据',
+        success: function (res) {
+          if (res.confirm) {
+            that.setting();
+          }
+        }
       })
       return;
     }
 
-    if (electricNum < 0) {
-       wx.showToast({
-         title: '当前电量小于历史数据'
-      })
+    if (useredElectricNum < 0) {
+        var that = this;
+        wx.showModal({
+          title: '数据异常',
+          content: '当前用电量小于上次数据；前往设置上次数据',
+          success: function (res) {
+            if (res.confirm) {
+              that.setting();
+            }
+          }
+        })
+        return;
       return;
     }
-    if (!warterPrice) {
-      wx.showToast({
-        title: '未设置水价'
-      })
-      return;
-    }
-    if (!electricPrice) {
-      wx.showToast({
-        title: '未设置电价'
-      })
-      return;
-    }
-    if (!rentPrice) {
-      wx.showToast({
-        title: '未设置房租'
-      })
-      return;
-    }
-    var warterFee = this.FloatMul(warterNum,warterPrice);
-    var electricFee = this.FloatMul(electricNum,electricPrice);
-    var rentFee = this.FloatMul(rentPrice ,this.data.rentNum);
 
+    //计算
+    var warterFee = util.floatMul(useredWarterNum,warterPrice);
+    var electricFee = util.floatMul(useredElectricNum,electricPrice);
+    var rentFee = util.floatMul(rentPrice ,rentNum);
     var total = warterFee + electricFee + rentFee;
 
-    var calResult = "水表读数："+ this.data.warterNum + "，用了" + warterNum + "吨，费用" + warterFee + "元； \n"  +
-                    "电表读数："+ this.data.electricNum + "， 用了" + electricNum + "度，费用" + electricFee + "元； \n" +
-                    "房租" + this.data.rentNum + "个月" +  rentFee + "元； \n" +
+    // 生成文案
+    var calResult = "水表读数：" + warterNum + "，用了" + useredWarterNum + "吨，费用" + warterFee + "元； \n"  +
+                    "电表读数：" + electricNum + "， 用了" + useredElectricNum + "度，费用" + electricFee + "元； \n" +
+                    "房租" + rentNum + "个月" +  rentFee + "元； \n" +
                     "共计 " + total + "元";
-    var date= this.currentMonth();
-    console.log(date);             
-     this.setData({
-        fileData : {"warterRecord":this.data.warterNum,"electricRecord":this.data.electricNum,"warterFee":warterFee,"electricFee":electricFee,"date":date}
-     })            
+    var hiddenTip = wx.getStorageSync('hiddenTip');
+    if (!hiddenTip) {
+      wx.showModal({
+        title: '提示',
+        content: '长按计算结果，可复制到粘贴板',
+        cancelText : '不在提醒',
+        confirmText : '确定',
+        success : function (res) {
+          if (res.cancel) {
+            wx.setStorageSync('hiddenTip', true);
+          }
+        }
+      })
+    }
+
+    // 保存数据
+    var date = util.currentMonth();
+    this.setData({
+        fileData : {
+                    "warterRecord":this.data.warterNum,
+                    "electricRecord":this.data.electricNum,
+                    "warterFee":warterFee,
+                    "electricFee":electricFee,
+                    "date":date
+                    }
+        })            
     this.setData({
       result : calResult
     })
- },
- currentMonth : function () {
-    var date=new Date;
-    var year=date.getFullYear(); 
-    var month=date.getMonth()+1;
-    month =(month<10 ? "0"+month : month); 
-    var mydate = (year.toString()+month.toString());
-    return mydate;
- },
- setClipboard : function(e) {
-   var that = this;
+  },
+
+  //复制到粘贴板
+  setClipboard : function(e) {
+    var that = this;
     wx.setClipboardData({
       data: this.data.result,
       success: function(res){
-       wx.showToast({
-        title: '复制成功'
+        wx.showToast({
+        title: '复制成功',
+        image: '../../image/success.png'
       })
       }
     })
- },
- saveRecord : function () {
-    var that = this;
-    if (!that.data.fileData) {
+  },
+  // 保存记录
+  saveRecord : function () {
+    if (!this.data.fileData) {
+      var that = this;
+      wx.showModal({
+        title: '提示',
+        content: '没有可归档数据，请计算之后再做数据归档',
+        showCancel : false
+      })
       return;      
     }
-    var recordList = wx.getStorageSync('recordList');
-    if (!recordList) {
-      recordList = new Array();
-    }
-    recordList.push(that.data.fileData);
-    var saveResult = "";
-    
-    wx.setStorage({
-      key: 'recordList',
-      data: recordList,
-      success: function(res){
-        saveResult = "保存成功";
-      },
-      fail: function(res) {
-        saveResult = "保存失败";
-      },
-      complete: function(res) {
-        wx.showToast({
-          title: saveResult,
-          icon: 'success',
-          duration: 2000
-        })
-      }
-    })
- },
- setting : function () {
-  wx.navigateTo({url: "../logs/logs"})
- },
- showRecold : function() {
-   wx.navigateTo({url: "../record/record"})
-},
-  onLoad:function(options){
-    this.initData();
+    util.addRecord(this.data.fileData);
   },
+
+  //页面跳转
+  setting : function () {
+    wx.switchTab({url: "../logs/logs"})
+  },
+  showRecold : function() {
+    wx.navigateTo({url: "../record/record"})
+  },
+
   initData:function(){
       var that = this;
       that.setData({
@@ -191,16 +184,14 @@ Page({
         },
         warterNum :"",
         electricNum :"",
-        rentNum : "2"
+        rentNum : ""
       })
-
   },
-    onShareAppMessage: function() {
-    // 用户点击右上角分享
+
+  onShareAppMessage: function() {
     return {
-      title: '测试小程序', // 分享标题
-      desc: '测试小程序', // 分享描述
-      path: '' // 分享路径
+      title: '房租计算', 
+      desc: '房租计算', 
     }
   }
 })

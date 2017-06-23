@@ -1,21 +1,65 @@
-function formatTime(date) {
-  var year = date.getFullYear()
-  var month = date.getMonth() + 1
-  var day = date.getDate()
-
-  var hour = date.getHours()
-  var minute = date.getMinutes()
-  var second = date.getSeconds()
-
-
-  return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+function floatMul (arg1, arg2) {
+  var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+  try { m += s1.split(".")[1].length } catch (e) { }
+  try { m += s2.split(".")[1].length } catch (e) { }
+  return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
 }
 
-function formatNumber(n) {
-  n = n.toString()
-  return n[1] ? n : '0' + n
+function currentMonth () {
+  var date = new Date;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = (month < 10 ? "0" + month : month);
+  var mydate = (year.toString() + month.toString());
+  return mydate;
 }
 
-module.exports = {
-  formatTime: formatTime
+
+// 增加记录
+function addRecord(fileData) {
+  if (!fileData) {
+    return;
+  }
+  var recordList = wx.getStorageSync('recordList');
+  if (!recordList) {
+      recordList = new Array();
+  }
+  recordList.unshift(fileData);
+  var saveResult = "";
+  wx.setStorage({
+    key: 'recordList',
+    data: recordList,
+    success: function (res) {
+      saveResult = "保存成功";
+    },
+    fail: function (res) {
+      saveResult = "保存失败";
+    },
+    complete: function (res) {
+      wx.showToast({
+        title: saveResult,
+        image: '../../image/success.png'
+      })
+    }
+  })
 }
+
+// 读取历史记录
+function quearyRecord() {
+  var recordList = wx.getStorageSync('recordList');
+  return recordList;
+}
+
+function clearRecord () {
+  wx.setStorageSync('recordList', [])
+}
+
+function resetRecord (data){
+  wx.setStorageSync('recordList', data)
+}
+module.exports.quearyRecord = quearyRecord
+module.exports.addRecord = addRecord
+module.exports.clearRecord = clearRecord
+module.exports.resetRecord = resetRecord
+module.exports.floatMul = floatMul
+module.exports.currentMonth = currentMonth

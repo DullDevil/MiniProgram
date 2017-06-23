@@ -1,22 +1,22 @@
+var util = require('../../utils/util.js');
+
 Page({
     data:{
         recordList : []
     },
     onLoad:function(options){
-        var recordList = wx.getStorageSync('recordList');
+        var recordList = util.quearyRecord();
         this.setData({
             recordList : recordList
         })
-        console.log(this.data.recordList);
     },
     clearRecord : function () {
-        wx.setStorageSync('recordList', [])
+        util.clearRecord();
         this.setData({
             recordList : []
         })
     },
     itemLongTap : function (e) {
-        console.log(e.currentTarget.id);
         var that = this;
         wx.showActionSheet({
             "itemList":["删除"],
@@ -36,7 +36,7 @@ Page({
         this.setData({
             recordList : recordList
         })
-        wx.setStorageSync('recordList', recordList)
+        util.resetRecord(recordList);
     }
 })
 

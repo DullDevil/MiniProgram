@@ -9,16 +9,18 @@
 </template>
  
  <view class="mainContainer">
+    <!--价格信息-->
+    <view class="sectionTitle"><label class="title">单价</label> </view>
+    <template is="item" data="{{...warter}}"></template>
+    <template is="item" data="{{...electric}}"></template>
+    <template is="item" data="{{...rent}}"></template>
+    <!--历史数据-->
     <view class="sectionTitle">
       <label class="title">上次数据</label> 
       <label class="loadRecord" bindtap="loadRecord">读取上次数据</label> 
     </view>
     <template is="item" data="{{...warterRecord}}"></template>
     <template is="item" data="{{...electricRecord}}"></template>
-    <view class="sectionTitle"><label class="title">单价</label> </view>
-    <template is="item" data="{{...warter}}"></template>
-    <template is="item" data="{{...electric}}"></template>
-    <template is="item" data="{{...rent}}"></template>
     <button class="save" bindtap="save">保存</button>
  </view>
 

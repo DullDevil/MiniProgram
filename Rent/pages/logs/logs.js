@@ -1,6 +1,13 @@
 //logs.js
+
+var util = require('../../utils/util.js');
 Page({
  data : {},
+ //  app 事件
+ onLoad: function (options) {
+   this.initData();
+ },
+ // 监听输入框内容
  priceChange : function(e) {
    if (e.currentTarget.id == "warter") {
      var newWarter = this.data.warter;
@@ -34,48 +41,85 @@ Page({
       })
    }
   },
- save:function() {
-   var price = {"warterPrice":this.data.warter.storageVaule,"electricPrice":this.data.electric.storageVaule,"rentPrice":this.data.rent.storageVaule}
-   var record = {"warterRecord":this.data.warterRecord.storageVaule,"electricRecord":this.data.electricRecord.storageVaule};
-   
-   wx.setStorageSync('price',price);
-   wx.setStorageSync('record',record );
-    wx.showToast({
-        title: '保存成功',
-        icon: 'success',
-        duration: 500
+  // 保存设置
+  save:function() {
+    var warterPrice = this.data.warter.storageVaule;
+    if (!warterPrice) {
+      wx.showToast({
+        title: '请设置水价',
+        image: '../../image/error.png'
       })
- },
-loadRecord : function() {
-  var newWarterRecord = this.data.warterRecord;
-  var newElectricRecord = this.data.electricRecord;
-  var recordList = wx.getStorageSync('recordList');
-  if (recordList) {
-    var lastRecord = recordList[recordList.length - 1];
-    newWarterRecord.storageVaule = lastRecord.warterRecord;
-    newElectricRecord.storageVaule = lastRecord.electricRecord;
-    this.setData({
-      warterRecord : newWarterRecord,
-      electricRecord : newElectricRecord,
-    })
+      return;
+    }
+
+    var electricPrice = this.data.electric.storageVaule;
+    if (!electricPrice) {
+      wx.showToast({
+        title: '请设置电价',
+        image: '../../image/error.png'
+      })
+      return;
+    }
+
+    var rentPrice = this.data.rent.storageVaule;
+    if (!rentPrice) {
+      wx.showToast({
+        title: '请设置房租',
+        image : '../../image/error.png'
+      })
+      return;
+    }
+    var price = { 
+      "warterPrice": warterPrice,
+      "electricPrice": electricPrice,
+      "rentPrice": rentPrice
+      }
+    var record = {
+      "warterRecord":this.data.warterRecord.storageVaule,
+      "electricRecord":this.data.electricRecord.storageVaule
+      };
+   
+    wx.setStorageSync('price',price);
+    wx.setStorageSync('record',record );
     wx.showToast({
-      title: '读取成功',
-      icon: 'success',
-      duration: 500
+      title: '保存成功',
+      image: '../../image/success.png'
     })
-  } else {
-    wx.showToast({
-      title: '无历史数据',
-      icon: 'success',
-      duration: 500
-    })
-  }
-  
-},
-//  app 事件
- onLoad:function(options){
-  this.initData();
   },
+
+  //加载历史数据
+  loadRecord : function() {
+    var newWarterRecord = this.data.warterRecord;
+    var newElectricRecord = this.data.electricRecord;
+    var recordList = util.quearyRecord();
+    
+    if (recordList && recordList.length > 0) {  
+      var lastRecord = recordList[0];
+      newWarterRecord.storageVaule = lastRecord.warterRecord;
+      newElectricRecord.storageVaule = lastRecord.electricRecord;
+      this.setData({
+        warterRecord : newWarterRecord,
+        electricRecord : newElectricRecord,
+      })
+      var record = {
+        "warterRecord": this.data.warterRecord.storageVaule,
+        "electricRecord": this.data.electricRecord.storageVaule
+      };
+      wx.setStorageSync('record', record);
+      wx.showToast({
+        title: '读取成功',
+        image : '../../image/success.png'
+      })
+    } else {
+      wx.showToast({
+        title: '无历史数据',
+        image: '../../image/error.png'
+      })
+    }
+  },
+
+
+  //初始化数据
   initData:function(){
       var that = this;
       var price = wx.getStorageSync("price")
