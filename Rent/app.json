@@ -1,7 +1,7 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/logs/logs",
+    "pages/setting/setting",
     "pages/record/record"
   ],
   "window":{
@@ -21,7 +21,7 @@
         "selectedIconPath" : "image/home_h.png"
       },
       {
-        "pagePath": "pages/logs/logs",
+        "pagePath": "pages/setting/setting",
         "text": "设置",
         "iconPath": "image/setting_n.png",
         "selectedIconPath": "image/setting_h.png"
