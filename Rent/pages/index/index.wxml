@@ -11,12 +11,11 @@
   </view>
 </template>
 
-
 <view class="mainContainer">
     <template is="item" data="{{...warter}}"></template>
     <template is="item" data="{{...electric}}"></template>
     <template is="item" data="{{...rent}}"></template>
-    <view class="result"  bindlongtap="setClipboard">
+    <view class="result"  bindlongpress="setClipboard">
         <text >{{result}}</text>
     </view>
     <button class="cal" bindtap="cal">计算</button>

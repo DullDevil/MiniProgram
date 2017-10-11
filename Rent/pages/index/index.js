@@ -28,34 +28,21 @@ Page({
   onLoad: function (options) {
     
   },
+
+
   //输入框内容改变
   numChange : function(e) {
 		var item = this.data[e.currentTarget.id];
 		item.storageVaule = e.detail.value;
 		this.setData(item);
-		
   },
+
   // 计算
   cal : function() {
-    // 获取价格
-    var price = wx.getStorageSync("price");
-    if (!price) {
-      var that = this;
-      wx.showModal({
-        title: '提示',
-        content: '请设置价格信息',
-        success: function (res) {
-          if (res.confirm) {
-            that.setting();
-          }
-        }
-      })
-      return;
-    }
-    var warterPrice = price.warterPrice > 0 ? price.warterPrice : 0;
-    var electricPrice = price.electricPrice > 0 ? price.electricPrice : 0;
-    var rentPrice = price.rentPrice > 0 ? price.rentPrice : 0;
-  
+		var price = this.queryPrice();
+  	if (!price) {
+			return;
+		}
     // 读取历史记录
     var record = wx.getStorageSync('record');
     var warterRecord = record.warterRecord ? record.warterRecord : 0;
@@ -84,24 +71,23 @@ Page({
     }
 
     if (useredElectricNum < 0) {
-        var that = this;
-        wx.showModal({
-          title: '数据异常',
-          content: '当前用电量小于上次数据；前往设置上次数据',
-          success: function (res) {
-            if (res.confirm) {
-              that.setting();
-            }
-          }
-        })
-        return;
-      return;
+			var that = this;
+			wx.showModal({
+				title: '数据异常',
+				content: '当前用电量小于上次数据；前往设置上次数据',
+				success: function (res) {
+					if (res.confirm) {
+						that.setting();
+					}
+				}
+			})
+			return;
     }
 
     //计算
-    var warterFee = util.floatMul(useredWarterNum,warterPrice);
-    var electricFee = util.floatMul(useredElectricNum,electricPrice);
-    var rentFee = util.floatMul(rentPrice ,rentNum);
+		var warterFee = util.floatMul(useredWarterNum, price.warter);
+		var electricFee = util.floatMul(useredElectricNum,price.electric);
+		var rentFee = util.floatMul(rentNum, price.rent);
     var total = warterFee + electricFee + rentFee;
 
     // 生成文案
@@ -109,27 +95,14 @@ Page({
                     "电表读数：" + electricNum + "， 用了" + useredElectricNum + "度，费用" + electricFee + "元； \n" +
                     "房租" + rentNum + "个月" +  rentFee + "元； \n" +
                     "共计 " + total + "元";
-    var hiddenTip = wx.getStorageSync('hiddenTip');
-    if (!hiddenTip) {
-      wx.showModal({
-        title: '提示',
-        content: '长按计算结果，可复制到粘贴板',
-        cancelText : '不在提醒',
-        confirmText : '确定',
-        success : function (res) {
-          if (res.cancel) {
-            wx.setStorageSync('hiddenTip', true);
-          }
-        }
-      })
-    }
 
+		this.shouldShowTip();
     // 保存数据
     var date = util.currentMonth();
     this.setData({
         fileData : {
-                    "warterRecord":this.data.warterNum,
-                    "electricRecord":this.data.electricNum,
+                    "warterRecord":warterNum,
+                    "electricRecord":electricNum,
                     "warterFee":warterFee,
                     "electricFee":electricFee,
                     "date":date
@@ -167,6 +140,46 @@ Page({
     util.addRecord(this.data.fileData);
   },
 
+	shouldShowTip: function() {
+		var hiddenTip = wx.getStorageSync('hiddenTip');
+		if (!hiddenTip) {
+			wx.showModal({
+				title: '提示',
+				content: '长按计算结果，可复制到粘贴板',
+				cancelText: '不在提醒',
+				confirmText: '确定',
+				success: function (res) {
+					if (res.cancel) {
+						wx.setStorageSync('hiddenTip', true);
+					}
+				}
+			})
+		}
+	},
+	queryPrice: function () {
+		// 获取价格
+		var price = wx.getStorageSync("price");
+
+		if (!price) {
+			var that = this;
+			wx.showModal({
+				title: '提示',
+				content: '请设置价格信息',
+				success: function (res) {
+					if (res.confirm) {
+						that.setting();
+					}
+				}
+			})
+			return null;
+		}
+		var warterPrice = price.warterPrice > 0 ? price.warterPrice : 0;
+		var electricPrice = price.electricPrice > 0 ? price.electricPrice : 0;
+		var rentPrice = price.rentPrice > 0 ? price.rentPrice : 0;
+		return { warter: warterPrice, electric: electricPrice, rent: rentPrice };
+	},
+
+
   //页面跳转
   setting : function () {
     wx.switchTab({url: "../setting/setting"})
@@ -178,7 +191,7 @@ Page({
 
   onShareAppMessage: function() {
     return {
-			desc: '房租计算，让你的房租费用一目了然'
+			desc: '房租计算，让你的租房费用一目了然'
     }
   }
 })
