@@ -3,26 +3,37 @@
 var util = require('../../utils/util.js');
 Page({
   data: {
-    result : "计算结果"
+    result : "计算结果",
+		warter: {
+			name: "水表",
+			unit: "吨",
+			inputId: "warter",
+			storageVaule: ""
+		},
+		electric: {
+			name: "电表",
+			unit: "度",
+			inputId: "electric",
+			storageVaule: ""
+		},
+		rent: {
+			name: "房租",
+			unit: "月",
+			inputId: "rent",
+			storageVaule: ""
+		}
   },
+	
+
   onLoad: function (options) {
-    this.initData();
+    
   },
   //输入框内容改变
   numChange : function(e) {
-    if (e.currentTarget.id == "warter") {
-      this.setData ({
-        warterNum : e.detail.value
-      })
-    } else if (e.currentTarget.id == "electric") {
-      this.setData ({
-        electricNum : e.detail.value
-      })
-    } else if (e.currentTarget.id == "rent") {
-      this.setData ({
-        rentNum : e.detail.value
-      })
-    }
+		var item = this.data[e.currentTarget.id];
+		item.storageVaule = e.detail.value;
+		this.setData(item);
+		
   },
   // 计算
   cal : function() {
@@ -51,10 +62,10 @@ Page({
     var electricRecord = record.electricRecord ? record.electricRecord : 0;
 
     // 输入框数据处理
-    var warterNum = this.data.warterNum ? this.data.warterNum  : 0;
-    var electricNum = this.data.electricNum ? this.data.electricNum : 0;
-    var rentNum = this.data.rentNum ? this.data.rentNum : 0;
-
+		var warterNum = this.data.warter.storageVaule ? this.data.warter.storageVaule  : 0;
+		var electricNum = this.data.electric.storageVaule ? this.data.electric.storageVaule : 0;
+		var rentNum = this.data.rent.storageVaule ? this.data.rent.storageVaule : 0;
+		
     var useredWarterNum = warterNum - warterRecord;
     var useredElectricNum = electricNum - electricRecord;
 
@@ -158,40 +169,16 @@ Page({
 
   //页面跳转
   setting : function () {
-    wx.switchTab({url: "../logs/logs"})
+    wx.switchTab({url: "../setting/setting"})
   },
   showRecold : function() {
     wx.navigateTo({url: "../record/record"})
   },
 
-  initData:function(){
-      var that = this;
-      that.setData({
-        warter: {
-          name :"水表",
-          unit:"吨",
-          inputId:"warter"
-        },
-        electric: {
-          name :"电表",
-          unit:"度",
-          inputId:"electric"
-        },
-         rent: {
-          name :"房租",
-          unit:"月",
-          inputId:"rent"
-        },
-        warterNum :"",
-        electricNum :"",
-        rentNum : ""
-      })
-  },
 
   onShareAppMessage: function() {
     return {
-      title: '房租计算', 
-      desc: '房租计算', 
+			desc: '房租计算，让你的房租费用一目了然'
     }
   }
 })
