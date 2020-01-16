@@ -1,24 +1,22 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
     "pages/setting/setting",
     "pages/record/record"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
-    
+    "navigationBarTextStyle": "black"
   },
-
   "tabBar": {
     "list": [
       {
         "pagePath": "pages/index/index",
         "text": "计算",
-        "iconPath" : "image/home_n.png",
-        "selectedIconPath" : "image/home_h.png"
+        "iconPath": "image/home_n.png",
+        "selectedIconPath": "image/home_h.png"
       },
       {
         "pagePath": "pages/setting/setting",
@@ -27,5 +25,6 @@
         "selectedIconPath": "image/setting_h.png"
       }
     ]
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

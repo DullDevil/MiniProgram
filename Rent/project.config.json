@@ -6,20 +6,22 @@
 		"postcss": true,
 		"minified": true
 	},
-	"compileType": "weapp",
+	"compileType": "miniprogram",
 	"libVersion": "1.5.4",
 	"appid": "wx51dcd82857a7cf83",
 	"projectname": "Rent",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
-		"weapp": {
-			"current": -1,
-			"list": []
-		},
 		"search": {
 			"current": -1,
 			"list": []
 		},
 		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
 			"current": -1,
 			"list": []
 		}
